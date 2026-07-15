@@ -18,4 +18,8 @@ enum 50155 "Diagnostics Line Type"
     {
         Caption = 'Drug';
     }
+    value(4; Admission)
+    {
+        Caption = 'Admission';
+    }
 }

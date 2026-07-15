@@ -8,6 +8,7 @@ codeunit 50169 "Diagnostics Invoice Sync"
         DiagnosticsLine: Record "Diagnostics Line";
         DiagnosisDescription: Record "Diagnosis Description";
         Drug: Record Drug;
+        Ward: Record Ward;
         LineNo: Integer;
     begin
         Patient.Get(DiagnosticsHeader."Patient No");
@@ -37,16 +38,27 @@ codeunit 50169 "Diagnostics Invoice Sync"
                 SalesLine."Document No." := SalesHeader."No.";
                 SalesLine."Line No." := LineNo;
 
-                if DiagnosticsLine.Type = DiagnosticsLine.Type::Drug then begin
-                    Drug.Get(DiagnosticsLine."Test No");
-                    Drug.TestField("Item No");
-                    SalesLine.Validate(Type, SalesLine.Type::Item);
-                    SalesLine.Validate("No.", Drug."Item No");
-                end else begin
-                    DiagnosisDescription.Get(DiagnosticsLine."Test No");
-                    DiagnosisDescription.TestField("G/L Account No");
-                    SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
-                    SalesLine.Validate("No.", DiagnosisDescription."G/L Account No");
+                case DiagnosticsLine.Type of
+                    DiagnosticsLine.Type::Drug:
+                        begin
+                            Drug.Get(DiagnosticsLine."Test No");
+                            Drug.TestField("Item No");
+                            SalesLine.Validate(Type, SalesLine.Type::Item);
+                            SalesLine.Validate("No.", Drug."Item No");
+                        end;
+                    DiagnosticsLine.Type::Admission:
+                        begin
+                            Ward.Get(DiagnosticsLine."Test No");
+                            Ward.TestField("G/L Account No");
+                            SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
+                            SalesLine.Validate("No.", Ward."G/L Account No");
+                        end;
+                    else begin
+                        DiagnosisDescription.Get(DiagnosticsLine."Test No");
+                        DiagnosisDescription.TestField("G/L Account No");
+                        SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
+                        SalesLine.Validate("No.", DiagnosisDescription."G/L Account No");
+                    end;
                 end;
 
                 SalesLine.Validate(Description, DiagnosticsLine.Description);

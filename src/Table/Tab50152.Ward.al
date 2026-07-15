@@ -39,6 +39,12 @@ table 50152 Ward
             TableRelation = Location;
             Editable = false;
         }
+        field(7; "G/L Account No"; Code[20])
+        {
+            Caption = 'G/L Account No.';
+            DataClassification = CustomerContent;
+            TableRelation = "G/L Account";
+        }
     }
 
     keys

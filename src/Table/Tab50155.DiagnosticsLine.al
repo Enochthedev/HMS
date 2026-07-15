@@ -37,18 +37,24 @@ table 50155 "Diagnostics Line"
             else
             if (Type = const(Diagnosis)) "Diagnosis Description".Code where(Type = const(Diagnosis))
             else
-            if (Type = const(Drug)) Drug.Code;
+            if (Type = const(Drug)) Drug.Code
+            else
+            if (Type = const(Admission)) Ward."Ward No";
 
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
                 Drug: Record Drug;
+                Ward: Record Ward;
             begin
                 Clear(Description);
                 case Type of
                     Type::Drug:
                         if Drug.Get("Test No") then
                             Description := Drug.Description;
+                    Type::Admission:
+                        if Ward.Get("Test No") then
+                            Description := Ward.Description;
                     else
                         if DiagnosisDescription.Get("Test No") then
                             Description := DiagnosisDescription.Description;

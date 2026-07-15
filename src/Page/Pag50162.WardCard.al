@@ -48,6 +48,10 @@ page 50162 "Ward Card"
                 {
                     ApplicationArea = All;
                 }
+                field("G/L Account No"; Rec."G/L Account No")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
