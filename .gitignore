@@ -1,0 +1,18 @@
+# AL / Business Central build output
+*.app
+.alpackages/
+.altemplates/
+.snapshots/
+out/
+*.g.xlf
+
+# VS Code AL extension local/user-specific
+.vscode/rad.json
+.vscode/*.log
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Claude Code local settings
+.claude/
