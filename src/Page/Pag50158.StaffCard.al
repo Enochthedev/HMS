@@ -44,7 +44,7 @@ page 50158 "Staff Card"
                 {
                     ApplicationArea = All;
                 }
-                field("Vendor No"; Rec."Vendor No")
+                field("Employee No"; Rec."Employee No")
                 {
                     ApplicationArea = All;
                 }
@@ -55,18 +55,18 @@ page 50158 "Staff Card"
     {
         area(Processing)
         {
-            action(CreateUpdateVendor)
+            action(CreateUpdateEmployee)
             {
                 ApplicationArea = All;
-                Caption = 'Create/Update Vendor';
-                Image = Vendor;
+                Caption = 'Create/Update Employee';
+                Image = Employee;
                 trigger OnAction()
                 var
-                    StaffVendorSync: Codeunit "Staff Vendor Sync";
+                    StaffEmployeeSync: Codeunit "Staff Employee Sync";
                 begin
-                    StaffVendorSync.Run(Rec);
+                    StaffEmployeeSync.Run(Rec);
                     CurrPage.Update(false);
-                    Message('Vendor %1 has been created/updated.', Rec."Vendor No");
+                    Message('Employee %1 has been created/updated.', Rec."Employee No");
                 end;
             }
         }

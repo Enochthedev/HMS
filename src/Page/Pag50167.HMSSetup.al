@@ -32,6 +32,10 @@ page 50167 "HMS Setup"
                 {
                     ApplicationArea = All;
                 }
+                field("Diagnosis Description Nos"; Rec."Diagnosis Description Nos")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

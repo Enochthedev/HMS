@@ -37,24 +37,29 @@ table 50155 "Diagnostics Line"
             else
             if (Type = const(Diagnosis)) "Diagnosis Description".Code where(Type = const(Diagnosis))
             else
-            if (Type = const(Drug)) Drug.Code
+            if (Type = const(Drug)) Item."No."
             else
-            if (Type = const(Admission)) Ward."Ward No";
-
+            if (Type = const(Admission)) Ward."Ward No"
+            else
+            if (Type = const(Others)) "G/L Account"."No.";
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
-                Drug: Record Drug;
+                Item: Record Item;
                 Ward: Record Ward;
+                GLAccount: Record "G/L Account";
             begin
                 Clear(Description);
                 case Type of
                     Type::Drug:
-                        if Drug.Get("Test No") then
-                            Description := Drug.Description;
+                        if Item.Get("Test No") then
+                            Description := Item.Description;
                     Type::Admission:
                         if Ward.Get("Test No") then
                             Description := Ward.Description;
+                    Type::Others:
+                        if GLAccount.Get("Test No") then
+                            Description := GLAccount.Name;
                     else
                         if DiagnosisDescription.Get("Test No") then
                             Description := DiagnosisDescription.Description;
@@ -66,8 +71,13 @@ table 50155 "Diagnostics Line"
             Caption = 'Description';
             DataClassification = CustomerContent;
         }
+        field(6; Closed; Boolean)
+        {
+            Caption = 'Closed';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
     }
-
     keys
     {
         key(PK; "Document No", "Line No")
@@ -75,14 +85,12 @@ table 50155 "Diagnostics Line"
             Clustered = true;
         }
     }
-
     trigger OnInsert()
     var
         DiagnosticsLine: Record "Diagnostics Line";
     begin
         if "Line No" <> 0 then
             exit;
-
         DiagnosticsLine.SetRange("Document No", "Document No");
         if DiagnosticsLine.FindLast() then
             "Line No" := DiagnosticsLine."Line No" + 10000

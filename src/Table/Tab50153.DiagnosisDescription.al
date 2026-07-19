@@ -26,6 +26,13 @@ table 50153 "Diagnosis Description"
             DataClassification = CustomerContent;
             TableRelation = "G/L Account";
         }
+        field(5; "No. Series"; Code[20])
+        {
+            Caption = 'No. Series';
+            DataClassification = CustomerContent;
+            TableRelation = "No. Series";
+            Editable = false;
+        }
     }
 
     keys
@@ -35,4 +42,18 @@ table 50153 "Diagnosis Description"
             Clustered = true;
         }
     }
+
+    trigger OnInsert()
+    var
+        HMSSetup: Record "HMS Setup";
+        NoSeriesMgt: Codeunit NoSeriesManagement;
+    begin
+        if Code <> '' then
+            exit;
+
+        HMSSetup.Get();
+        HMSSetup.TestField("Diagnosis Description Nos");
+        "No. Series" := HMSSetup."Diagnosis Description Nos";
+        Code := NoSeriesMgt.GetNextNo("No. Series", WorkDate(), true);
+    end;
 }

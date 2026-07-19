@@ -1,4 +1,4 @@
-codeunit 50169 "Diagnostics Invoice Sync"
+codeunit 50169 "Diagnostics Order Sync"
 {
     procedure Run(var DiagnosticsHeader: Record "Diagnostics Header")
     var
@@ -7,44 +7,47 @@ codeunit 50169 "Diagnostics Invoice Sync"
         SalesLine: Record "Sales Line";
         DiagnosticsLine: Record "Diagnostics Line";
         DiagnosisDescription: Record "Diagnosis Description";
-        Drug: Record Drug;
+        Item: Record Item;
         Ward: Record Ward;
-        LineNo: Integer;
+        PatientCustomerSync: Codeunit "Patient Customer Sync";
+        NextSalesLineNo: Integer;
     begin
         Patient.Get(DiagnosticsHeader."Patient No");
-        Patient.TestField("Customer No");
+        if Patient."Customer No" = '' then
+            PatientCustomerSync.Run(Patient);
 
-        if DiagnosticsHeader."Invoice No" = '' then begin
+        if DiagnosticsHeader."Order No" = '' then begin
             SalesHeader.Init();
-            SalesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
+            SalesHeader."Document Type" := SalesHeader."Document Type"::Order;
             SalesHeader.Insert(true);
             SalesHeader.Validate("Sell-to Customer No.", Patient."Customer No");
             SalesHeader.Modify(true);
-            DiagnosticsHeader."Invoice No" := SalesHeader."No.";
+            DiagnosticsHeader."Order No" := SalesHeader."No.";
             DiagnosticsHeader.Modify(true);
         end else
-            SalesHeader.Get(SalesHeader."Document Type"::Invoice, DiagnosticsHeader."Invoice No");
+            SalesHeader.Get(SalesHeader."Document Type"::Order, DiagnosticsHeader."Order No");
 
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
         SalesLine.SetRange("Document No.", SalesHeader."No.");
-        SalesLine.DeleteAll(true);
+        if SalesLine.FindLast() then
+            NextSalesLineNo := SalesLine."Line No.";
 
         DiagnosticsLine.SetRange("Document No", DiagnosticsHeader."Document No");
+        DiagnosticsLine.SetRange(Closed, false);
         if DiagnosticsLine.FindSet() then
             repeat
-                LineNo += 10000;
+                NextSalesLineNo += 10000;
                 SalesLine.Init();
                 SalesLine."Document Type" := SalesHeader."Document Type";
                 SalesLine."Document No." := SalesHeader."No.";
-                SalesLine."Line No." := LineNo;
+                SalesLine."Line No." := NextSalesLineNo;
 
                 case DiagnosticsLine.Type of
                     DiagnosticsLine.Type::Drug:
                         begin
-                            Drug.Get(DiagnosticsLine."Test No");
-                            Drug.TestField("Item No");
+                            Item.Get(DiagnosticsLine."Test No");
                             SalesLine.Validate(Type, SalesLine.Type::Item);
-                            SalesLine.Validate("No.", Drug."Item No");
+                            SalesLine.Validate("No.", Item."No.");
                         end;
                     DiagnosticsLine.Type::Admission:
                         begin
@@ -52,6 +55,11 @@ codeunit 50169 "Diagnostics Invoice Sync"
                             Ward.TestField("G/L Account No");
                             SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
                             SalesLine.Validate("No.", Ward."G/L Account No");
+                        end;
+                    DiagnosticsLine.Type::Others:
+                        begin
+                            SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
+                            SalesLine.Validate("No.", DiagnosticsLine."Test No");
                         end;
                     else begin
                         DiagnosisDescription.Get(DiagnosticsLine."Test No");
@@ -64,6 +72,9 @@ codeunit 50169 "Diagnostics Invoice Sync"
                 SalesLine.Validate(Description, DiagnosticsLine.Description);
                 SalesLine.Validate(Quantity, 1);
                 SalesLine.Insert(true);
+
+                DiagnosticsLine.Closed := true;
+                DiagnosticsLine.Modify(true);
             until DiagnosticsLine.Next() = 0;
     end;
 }

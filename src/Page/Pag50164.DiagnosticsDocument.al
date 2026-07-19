@@ -38,15 +38,11 @@ page 50164 "Diagnostics Document"
                 {
                     ApplicationArea = All;
                 }
-                field("Ward No"; Rec."Ward No")
-                {
-                    ApplicationArea = All;
-                }
                 field(Doctor; Rec.Doctor)
                 {
                     ApplicationArea = All;
                 }
-                field("Invoice No"; Rec."Invoice No")
+                field("Order No"; Rec."Order No")
                 {
                     ApplicationArea = All;
                 }
@@ -63,18 +59,18 @@ page 50164 "Diagnostics Document"
     {
         area(Processing)
         {
-            action(CreateUpdateInvoice)
+            action(CreateUpdateOrder)
             {
                 ApplicationArea = All;
-                Caption = 'Create/Update Invoice';
+                Caption = 'Create/Update Order';
                 Image = CreateDocumentSet;
                 trigger OnAction()
                 var
-                    DiagnosticsInvoiceSync: Codeunit "Diagnostics Invoice Sync";
+                    DiagnosticsOrderSync: Codeunit "Diagnostics Order Sync";
                 begin
-                    DiagnosticsInvoiceSync.Run(Rec);
+                    DiagnosticsOrderSync.Run(Rec);
                     CurrPage.Update(false);
-                    Message('Invoice %1 has been created/updated.', Rec."Invoice No");
+                    Message('Order %1 has been created/updated.', Rec."Order No");
                 end;
             }
         }

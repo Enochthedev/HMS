@@ -27,6 +27,10 @@ page 50165 "Diagnostics Subpage"
                 {
                     ApplicationArea = All;
                 }
+                field(Closed; Rec.Closed)
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

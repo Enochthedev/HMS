@@ -45,6 +45,11 @@ table 50152 Ward
             DataClassification = CustomerContent;
             TableRelation = "G/L Account";
         }
+        field(9; "Order Quantity"; Integer)
+        {
+            Caption = 'Order Quantity';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

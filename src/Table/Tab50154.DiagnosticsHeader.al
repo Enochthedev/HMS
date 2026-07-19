@@ -58,23 +58,17 @@ table 50154 "Diagnostics Header"
             DataClassification = CustomerContent;
             Editable = false;
         }
-        field(8; "Ward No"; Code[20])
-        {
-            Caption = 'Ward No.';
-            DataClassification = CustomerContent;
-            TableRelation = Ward;
-        }
         field(9; Doctor; Code[20])
         {
             Caption = 'Doctor';
             DataClassification = CustomerContent;
             TableRelation = Staff."Staff No" where(Type = const(Doctor));
         }
-        field(10; "Invoice No"; Code[20])
+        field(10; "Order No"; Code[20])
         {
-            Caption = 'Invoice No.';
+            Caption = 'Order No.';
             DataClassification = CustomerContent;
-            TableRelation = "Sales Header"."No." where("Document Type" = const(Invoice));
+            TableRelation = "Sales Header"."No." where("Document Type" = const(Order));
             Editable = false;
         }
     }

@@ -21,6 +21,9 @@ codeunit 50168 "Patient Customer Sync"
         Customer."Phone No." := Patient."Phone Number";
 
         if IsNewCustomer then begin
+            Customer.Validate("Gen. Bus. Posting Group", 'DOMESTIC');
+            Customer.Validate("VAT Bus. Posting Group", 'DOMESTIC');
+            Customer.Validate("Customer Posting Group", 'DOMESTIC');
             Customer.Insert(true);
             Patient."Customer No" := Customer."No.";
             Patient.Modify(true);

@@ -1,17 +1,17 @@
-codeunit 50173 "Drug Purchase Order Sync"
+codeunit 50173 "Item Purchase Order Sync"
 {
-    procedure Run(Drug: Record Drug)
+    procedure Run(Item: Record Item)
     var
         PurchHeader: Record "Purchase Header";
         PurchLine: Record "Purchase Line";
     begin
-        Drug.TestField("Item No");
-        Drug.TestField("Vendor No");
+        Item.TestField("Vendor No.");
+        Item.TestField("Reorder Quantity");
 
         PurchHeader.Init();
         PurchHeader."Document Type" := PurchHeader."Document Type"::Order;
         PurchHeader.Insert(true);
-        PurchHeader.Validate("Buy-from Vendor No.", Drug."Vendor No");
+        PurchHeader.Validate("Buy-from Vendor No.", Item."Vendor No.");
         PurchHeader.Modify(true);
 
         PurchLine.Init();
@@ -19,8 +19,8 @@ codeunit 50173 "Drug Purchase Order Sync"
         PurchLine."Document No." := PurchHeader."No.";
         PurchLine."Line No." := 10000;
         PurchLine.Validate(Type, PurchLine.Type::Item);
-        PurchLine.Validate("No.", Drug."Item No");
-        PurchLine.Validate(Quantity, Drug."Reorder Quantity");
+        PurchLine.Validate("No.", Item."No.");
+        PurchLine.Validate(Quantity, Item."Reorder Quantity");
         PurchLine.Insert(true);
     end;
 }

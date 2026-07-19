@@ -29,10 +29,6 @@ page 50166 "Diagnostics List"
                 {
                     ApplicationArea = All;
                 }
-                field("Ward No"; Rec."Ward No")
-                {
-                    ApplicationArea = All;
-                }
                 field(Doctor; Rec.Doctor)
                 {
                     ApplicationArea = All;

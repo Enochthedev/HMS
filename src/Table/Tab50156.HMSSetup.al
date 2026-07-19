@@ -34,6 +34,12 @@ table 50156 "HMS Setup"
             DataClassification = CustomerContent;
             TableRelation = "No. Series";
         }
+        field(7; "Diagnosis Description Nos"; Code[20])
+        {
+            Caption = 'Diagnosis Description Nos.';
+            DataClassification = CustomerContent;
+            TableRelation = "No. Series";
+        }
     }
 
     keys

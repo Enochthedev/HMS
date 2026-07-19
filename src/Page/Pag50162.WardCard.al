@@ -52,6 +52,10 @@ page 50162 "Ward Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Order Quantity"; Rec."Order Quantity")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
@@ -71,6 +75,19 @@ page 50162 "Ward Card"
                     WardLocationSync.Run(Rec);
                     CurrPage.Update(false);
                     Message('Location %1 has been created/updated.', Rec."Location Code");
+                end;
+            }
+            action(CreateSalesOrder)
+            {
+                ApplicationArea = All;
+                Caption = 'Create Sales Order';
+                Image = Order;
+                trigger OnAction()
+                var
+                    WardSalesOrderSync: Codeunit "Ward Sales Order Sync";
+                begin
+                    WardSalesOrderSync.Run(Rec);
+                    Message('A sales order has been created for %1.', Rec."Ward No");
                 end;
             }
         }

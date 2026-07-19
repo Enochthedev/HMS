@@ -32,11 +32,11 @@ table 50150 Staff
             Caption = 'Type';
             DataClassification = CustomerContent;
         }
-        field(6; "Vendor No"; Code[20])
+        field(6; "Employee No"; Code[20])
         {
-            Caption = 'Vendor No.';
+            Caption = 'Employee No.';
             DataClassification = CustomerContent;
-            TableRelation = Vendor;
+            TableRelation = Employee;
             Editable = false;
         }
     }
