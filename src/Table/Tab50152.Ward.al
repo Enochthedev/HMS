@@ -50,6 +50,11 @@ table 50152 Ward
             Caption = 'Order Quantity';
             DataClassification = CustomerContent;
         }
+        field(10; "Unit Price"; Decimal)
+        {
+            Caption = 'Unit Price';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

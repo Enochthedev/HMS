@@ -6,6 +6,7 @@ codeunit 50169 "Diagnostics Order Sync"
         SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
         DiagnosticsLine: Record "Diagnostics Line";
+        IncompleteLine: Record "Diagnostics Line";
         DiagnosisDescription: Record "Diagnosis Description";
         Item: Record Item;
         Ward: Record Ward;
@@ -15,6 +16,13 @@ codeunit 50169 "Diagnostics Order Sync"
         Patient.Get(DiagnosticsHeader."Patient No");
         if Patient."Customer No" = '' then
             PatientCustomerSync.Run(Patient);
+
+        IncompleteLine.SetRange("Document No", DiagnosticsHeader."Document No");
+        IncompleteLine.SetRange(Closed, false);
+        IncompleteLine.SetFilter(Type, '<>%1', IncompleteLine.Type::" ");
+        IncompleteLine.SetRange("Test No", '');
+        if IncompleteLine.FindFirst() then
+            Error('Line %1 has a Type but no Test No. Please complete or delete it before creating the order.', IncompleteLine."Line No");
 
         if DiagnosticsHeader."Order No" = '' then begin
             SalesHeader.Init();
@@ -34,6 +42,7 @@ codeunit 50169 "Diagnostics Order Sync"
 
         DiagnosticsLine.SetRange("Document No", DiagnosticsHeader."Document No");
         DiagnosticsLine.SetRange(Closed, false);
+        DiagnosticsLine.SetFilter("Test No", '<>%1', '');
         if DiagnosticsLine.FindSet() then
             repeat
                 NextSalesLineNo += 10000;
@@ -55,6 +64,7 @@ codeunit 50169 "Diagnostics Order Sync"
                             Ward.TestField("G/L Account No");
                             SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
                             SalesLine.Validate("No.", Ward."G/L Account No");
+                            SalesLine.Validate("Unit Price", Ward."Unit Price");
                         end;
                     DiagnosticsLine.Type::Others:
                         begin
@@ -66,6 +76,7 @@ codeunit 50169 "Diagnostics Order Sync"
                         DiagnosisDescription.TestField("G/L Account No");
                         SalesLine.Validate(Type, SalesLine.Type::"G/L Account");
                         SalesLine.Validate("No.", DiagnosisDescription."G/L Account No");
+                        SalesLine.Validate("Unit Price", DiagnosisDescription."Unit Price");
                     end;
                 end;
 

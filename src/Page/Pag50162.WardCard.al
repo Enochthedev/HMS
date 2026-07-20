@@ -56,6 +56,10 @@ page 50162 "Ward Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

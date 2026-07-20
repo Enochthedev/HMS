@@ -33,6 +33,11 @@ table 50153 "Diagnosis Description"
             TableRelation = "No. Series";
             Editable = false;
         }
+        field(6; "Unit Price"; Decimal)
+        {
+            Caption = 'Unit Price';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
