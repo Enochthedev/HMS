@@ -44,26 +44,9 @@ table 50155 "Diagnostics Line"
             if (Type = const(Others)) "G/L Account"."No.";
             trigger OnValidate()
             var
-                DiagnosisDescription: Record "Diagnosis Description";
-                Item: Record Item;
-                Ward: Record Ward;
-                GLAccount: Record "G/L Account";
+                DiagnosticsLineLookup: Codeunit "Diagnostics Line Lookup";
             begin
-                Clear(Description);
-                case Type of
-                    Type::Drug:
-                        if Item.Get("Test No") then
-                            Description := Item.Description;
-                    Type::Admission:
-                        if Ward.Get("Test No") then
-                            Description := Ward.Description;
-                    Type::Others:
-                        if GLAccount.Get("Test No") then
-                            Description := GLAccount.Name;
-                    else
-                        if DiagnosisDescription.Get("Test No") then
-                            Description := DiagnosisDescription.Description;
-                end;
+                Description := DiagnosticsLineLookup.GetDescription(Type, "Test No");
             end;
         }
         field(5; Description; Text[100])
@@ -89,6 +72,7 @@ table 50155 "Diagnostics Line"
     var
         DiagnosticsLine: Record "Diagnostics Line";
     begin
+        TestDocumentOpen();
         if "Line No" <> 0 then
             exit;
         DiagnosticsLine.SetRange("Document No", "Document No");
@@ -96,5 +80,18 @@ table 50155 "Diagnostics Line"
             "Line No" := DiagnosticsLine."Line No" + 10000
         else
             "Line No" := 10000;
+    end;
+
+    trigger OnModify()
+    begin
+        TestDocumentOpen();
+    end;
+
+    local procedure TestDocumentOpen()
+    var
+        DiagnosticsHeader: Record "Diagnostics Header";
+    begin
+        if DiagnosticsHeader.Get("Document No") and DiagnosticsHeader.Closed then
+            Error('This document is closed. No changes are allowed.');
     end;
 }

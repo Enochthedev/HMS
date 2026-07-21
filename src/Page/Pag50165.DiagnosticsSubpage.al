@@ -18,14 +18,17 @@ page 50165 "Diagnostics Subpage"
                 field(Type; Rec.Type)
                 {
                     ApplicationArea = All;
+                    Editable = LineNotClosed;
                 }
                 field("Test No"; Rec."Test No")
                 {
                     ApplicationArea = All;
+                    Editable = LineNotClosed;
                 }
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = All;
+                    Editable = LineNotClosed;
                 }
                 field(Closed; Rec.Closed)
                 {
@@ -34,4 +37,12 @@ page 50165 "Diagnostics Subpage"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        LineNotClosed := not Rec.Closed;
+    end;
+
+    var
+        LineNotClosed: Boolean;
 }

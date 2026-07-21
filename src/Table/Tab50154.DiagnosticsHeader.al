@@ -71,6 +71,12 @@ table 50154 "Diagnostics Header"
             TableRelation = "Sales Header"."No." where("Document Type" = const(Order));
             Editable = false;
         }
+        field(11; Closed; Boolean)
+        {
+            Caption = 'Closed';
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
     }
     keys
     {

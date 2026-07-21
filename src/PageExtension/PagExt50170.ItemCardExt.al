@@ -14,6 +14,8 @@ pageextension 50170 "Item Card Ext" extends "Item Card"
                 var
                     ItemPurchaseOrderSync: Codeunit "Item Purchase Order Sync";
                 begin
+                    if not Confirm('Do you want to create a purchase order for this Item?') then
+                        exit;
                     ItemPurchaseOrderSync.Run(Rec);
                     Message('A purchase order has been created for %1.', Rec."No.");
                 end;

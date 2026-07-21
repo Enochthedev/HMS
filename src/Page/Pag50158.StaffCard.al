@@ -64,6 +64,8 @@ page 50158 "Staff Card"
                 var
                     StaffEmployeeSync: Codeunit "Staff Employee Sync";
                 begin
+                    if not Confirm('Do you want to create/update the Employee for this Staff member?') then
+                        exit;
                     StaffEmployeeSync.Run(Rec);
                     CurrPage.Update(false);
                     Message('Employee %1 has been created/updated.', Rec."Employee No");

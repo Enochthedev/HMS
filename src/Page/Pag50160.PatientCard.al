@@ -11,7 +11,6 @@ page 50160 "Patient Card"
             group(General)
             {
                 Caption = 'General';
-
                 field("Patient No"; Rec."Patient No")
                 {
                     ApplicationArea = All;
@@ -90,6 +89,7 @@ page 50160 "Patient Card"
                 var
                     PatientCustomerSync: Codeunit "Patient Customer Sync";
                 begin
+                    if not Confirm('Do you want to create/update the Customer for this Patient?') then exit;
                     PatientCustomerSync.Run(Rec);
                     CurrPage.Update(false);
                     Message('Customer %1 has been created/updated.', Rec."Customer No");

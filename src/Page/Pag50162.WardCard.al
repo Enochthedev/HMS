@@ -4,7 +4,6 @@ page 50162 "Ward Card"
     Caption = 'Ward Card';
     PageType = Card;
     SourceTable = Ward;
-
     layout
     {
         area(content)
@@ -12,12 +11,10 @@ page 50162 "Ward Card"
             group(General)
             {
                 Caption = 'General';
-
                 field("Ward No"; Rec."Ward No")
                 {
                     ApplicationArea = All;
                     ShowMandatory = true;
-
                     trigger OnAssistEdit()
                     var
                         HMSSetup: Record "HMS Setup";
@@ -76,6 +73,8 @@ page 50162 "Ward Card"
                 var
                     WardLocationSync: Codeunit "Ward Location Sync";
                 begin
+                    if not Confirm('Do you want to create/update the Location for this Ward?') then
+                        exit;
                     WardLocationSync.Run(Rec);
                     CurrPage.Update(false);
                     Message('Location %1 has been created/updated.', Rec."Location Code");
@@ -90,6 +89,8 @@ page 50162 "Ward Card"
                 var
                     WardSalesOrderSync: Codeunit "Ward Sales Order Sync";
                 begin
+                    if not Confirm('Do you want to create a sales order for this Ward?') then
+                        exit;
                     WardSalesOrderSync.Run(Rec);
                     Message('A sales order has been created for %1.', Rec."Ward No");
                 end;
